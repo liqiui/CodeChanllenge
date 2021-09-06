@@ -36,7 +36,7 @@ class DataAdapter(private val onClickListener: OnClickListener): ListAdapter<Sho
 
     companion object DiffCallback: DiffUtil.ItemCallback<Show>() {
         override fun areItemsTheSame(oldItem: Show, newItem: Show): Boolean {
-            return oldItem.image.showImage === newItem.image.showImage
+            return oldItem.image?.showImage === newItem.image?.showImage
         }
 
         override fun areContentsTheSame(oldItem: Show, newItem: Show): Boolean {

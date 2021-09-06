@@ -8,11 +8,12 @@ import com.example.codechallenge.data.Data
 import com.example.codechallenge.data.Show
 import com.example.codechallenge.data.sampleData
 import com.example.codechallenge.network.Api
+import com.example.codechallenge.network.ApiService
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.launch
 
-class ShowViewModel : ViewModel() {
+class ShowViewModel(val apiService: ApiService = Api.retrofitService) : ViewModel() {
     // The internal MutableLiveData Data that stores the most recent data
     private val _data = MutableLiveData<Data>()
     private val _selectedData = MutableLiveData<Show?>()
@@ -54,7 +55,7 @@ class ShowViewModel : ViewModel() {
     private  fun getDataFromNetworkCoroutine(){
         viewModelScope.launch {
             try {
-                val originalData = Api.retrofitService.getDataCoroutine()
+                val originalData = apiService.getDataCoroutine()
                 filteredData = Data(payload = originalData.payload.filter { show -> show.drm && show.episodeCount > 0 },
                     skip = originalData.skip, take =  originalData.take, totalRecords = originalData.totalRecords)
                 _data.value = filteredData
