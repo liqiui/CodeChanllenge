@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.codechallenge.data.Show
 import com.example.codechallenge.databinding.ShowItemBinding
 
-class DataAdapter: ListAdapter<Show, DataAdapter.ShowItemHolder>(
+class DataAdapter(private val onClickListener: OnClickListener): ListAdapter<Show, DataAdapter.ShowItemHolder>(
     DiffCallback
 ) {
+    class OnClickListener(val clickListener: (show: Show) -> Unit) {
+        fun onClick( show: Show) = clickListener( show)
+    }
+
     class ShowItemHolder(private var binding: ShowItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(show: Show) {
             binding.show = show
@@ -23,8 +27,11 @@ class DataAdapter: ListAdapter<Show, DataAdapter.ShowItemHolder>(
     }
 
     override fun onBindViewHolder(holder: ShowItemHolder, position: Int) {
-        val show = getItem(position)
-        holder.bind(show)
+        val user = getItem(position)
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(user)
+        }
+        holder.bind(user)
     }
 
     companion object DiffCallback: DiffUtil.ItemCallback<Show>() {

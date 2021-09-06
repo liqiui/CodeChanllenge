@@ -3,23 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_show">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_show"
         android:name="com.example.codechallenge.ui.show.ShowFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_show" />
+        android:label="@string/title_show"
+        tools:layout="@layout/fragment_show" >
+        <action
+            android:id="@+id/action_showDetail"
+            app:destination="@id/navigation_detail" />
+
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.codechallenge.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_detail"
+        android:name="com.example.codechallenge.ui.detail.DetailFragment"
+        android:label="@string/title_detail"
+        tools:layout="@layout/fragment_detail">
+        <argument
+            android:name="show"
+            app:argType="com.example.codechallenge.data.Show" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.codechallenge.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
 </navigation>

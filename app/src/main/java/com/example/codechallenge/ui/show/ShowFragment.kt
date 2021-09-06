@@ -37,7 +37,16 @@ class ShowFragment : Fragment() {
 // Giving the bindihng access to the OverViewodel
         binding.viewModel = showViewModel
 
-        binding.showGrid.adapter = DataAdapter()
+        binding.showGrid.adapter = DataAdapter(DataAdapter.OnClickListener{
+            showViewModel.displayDataDetails(it)
+        })
+        showViewModel.selectedData.observe(viewLifecycleOwner, Observer {
+            if(it !=null){
+                this.findNavController().navigate(
+                    ShowFragmentDirections.actionShowDetail(it))
+                showViewModel.displayDataDetailComplete()
+            }
+        })
 
         return binding.root
     }

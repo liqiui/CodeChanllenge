@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.codechallenge.data.Data
+import com.example.codechallenge.data.Show
 import com.example.codechallenge.data.sampleData
 import com.example.codechallenge.network.Api
 import com.squareup.moshi.Moshi
@@ -14,15 +15,27 @@ import kotlinx.coroutines.launch
 class ShowViewModel : ViewModel() {
     // The internal MutableLiveData Data that stores the most recent data
     private val _data = MutableLiveData<Data>()
+    private val _selectedData = MutableLiveData<Show?>()
     var filteredData = Data(emptyList())
 
     // The external immutable LiveData for the response Data
     val data: LiveData<Data>
         get() = _data
 
+    val selectedData: LiveData<Show?>
+        get() = _selectedData
+
     init {
 //        getDataFromSample()
         getDataFromNetworkCoroutine()
+    }
+
+    fun displayDataDetails(show: Show){
+        _selectedData.value = show
+    }
+
+    fun displayDataDetailComplete(){
+        _selectedData.value = null
     }
 
     //getting data from local data for testing
