@@ -11,9 +11,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.codechallenge.DataAdapter
+import com.example.codechallenge.R
 import com.example.codechallenge.databinding.FragmentShowBinding
 
-class ShowFragment : Fragment() {
+class ShowFragment : Fragment(), androidx.appcompat.widget.SearchView.OnQueryTextListener
+{
+    private var keyword = ""
     private val showViewModel: ShowViewModel by lazy {
         ViewModelProvider(this).get(ShowViewModel::class.java)
     }
@@ -50,4 +53,48 @@ class ShowFragment : Fragment() {
 
         return binding.root
     }
+
+    private var searchView: androidx.appcompat.widget.SearchView? = null
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.home, menu)
+        searchView = menu.findItem(R.id.action_search)?.let {
+            it.actionView as? androidx.appcompat.widget.SearchView
+        }?.apply {
+            (activity?.getSystemService(Context.SEARCH_SERVICE) as? SearchManager)?.also {
+                setSearchableInfo(it.getSearchableInfo(activity?.componentName))
+            }
+            maxWidth = Int.MAX_VALUE
+
+            setIconifiedByDefault(false)
+            isIconified = false
+            isSubmitButtonEnabled = false
+            setOnQueryTextListener(this@ShowFragment)
+            requestFocus()
+            layoutParams = ActionBar.LayoutParams(
+                ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.MATCH_PARENT)
+        }
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return query?.let {
+            if (it.length < 2) { showViewModel.reset() }
+            keyword = it
+            showViewModel.updateKeyword(keyword)
+            searchView?.clearFocus()
+            true
+        } ?: false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return newText?.let {
+            if (it.length < 2) { showViewModel.reset() }
+            true
+        } ?: true
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

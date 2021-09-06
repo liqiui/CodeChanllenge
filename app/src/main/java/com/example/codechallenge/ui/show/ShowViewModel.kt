@@ -64,4 +64,13 @@ class ShowViewModel : ViewModel() {
         }
     }
 
+    fun updateKeyword( keyword: String) {
+        val updatedData = Data(payload = filteredData.payload.filter { show -> show.title.contains(keyword, true) || show.description.contains(keyword, true) },
+            skip = filteredData.skip, take =  filteredData.take, totalRecords = filteredData.totalRecords)
+        _data.value = updatedData
+    }
+
+    fun reset(){
+        _data.value = filteredData
+    }
 }
