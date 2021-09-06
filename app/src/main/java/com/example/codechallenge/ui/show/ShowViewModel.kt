@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.codechallenge.data.Data
 import com.example.codechallenge.data.sampleData
+import com.example.codechallenge.network.Api
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.launch
@@ -13,13 +14,15 @@ import kotlinx.coroutines.launch
 class ShowViewModel : ViewModel() {
     // The internal MutableLiveData Data that stores the most recent data
     private val _data = MutableLiveData<Data>()
+    var filteredData = Data(emptyList())
 
     // The external immutable LiveData for the response Data
     val data: LiveData<Data>
         get() = _data
 
     init {
-        getDataFromSample()
+//        getDataFromSample()
+        getDataFromNetworkCoroutine()
     }
 
     //getting data from local data for testing
@@ -33,4 +36,19 @@ class ShowViewModel : ViewModel() {
 
         _data.value = sampleData ?:Data(emptyList(), 0, 0, 0,)
     }
+
+    //Coroutine version of getting data
+    private  fun getDataFromNetworkCoroutine(){
+        viewModelScope.launch {
+            try {
+                val originalData = Api.retrofitService.getDataCoroutine()
+                filteredData = Data(payload = originalData.payload.filter { show -> show.drm && show.episodeCount > 0 },
+                    skip = originalData.skip, take =  originalData.take, totalRecords = originalData.totalRecords)
+                _data.value = filteredData
+            }catch (e: Exception){
+                _data.value = Data(emptyList())
+            }
+        }
+    }
+
 }
