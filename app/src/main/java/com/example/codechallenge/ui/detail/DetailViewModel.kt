@@ -17,7 +17,7 @@ class DetailViewModel(show: Show, app: Application): AndroidViewModel(app){
                    private  val app: Application
     ): ViewModelProvider.Factory{
         @Suppress("UNCHEKED_CAST")
-        override fun <T: ViewModel?> create(modelClass: Class<T>):T{
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(DetailViewModel::class.java)){
                 return DetailViewModel(show, app) as T
             }
